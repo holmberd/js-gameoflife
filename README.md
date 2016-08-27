@@ -1,15 +1,17 @@
 # js-gameoflife
 
- * Game Of Life 2016/08/26
- * Supports Arbitrary World Rules: http://www.conwaylife.com/wiki/List_of_Life-like_cellular_automata
- *
- * Game-Of-Life World Constructor 
- * Constructor: World()
- * @param {String} 
- * @return World {Object}
- *
- * Methods:
- *
+## Game Of Life 2016/08/26
+*Supports Arbitrary World Rules: http://www.conwaylife.com/wiki/List_of_Life-like_cellular_automata
+
+_Game-Of-Life World Constructor_
+```
+Constructor: World()
+@param {String} 
+@return World {Object}
+```
+
+_Methods_:
+
  * World.init(String, String)
  * World.getCell({ row: Int, col: Int })
  * World.setCell({ row: Int, col: Int })
@@ -23,17 +25,25 @@
  * World.toString()
  * World.inBound( { row: Int, col: Int })
 
- * Example:
- *
- * var world = new World();
- * var ruleString = '123/3';
- * var board =  '......\n' +
-                '***...\n' +
-                '......\n' +
-                '......\n' +
-                '......\n' +
-                '......\n';
- *
- * world.init(board, ruleString);
- * world.evolve();
- * world.toString();
+ _Example_:
+
+ ```
+ var world = new World();
+ var ruleString = '123/3';
+
+ var board =  '......\n' +
+              '***...\n' +
+              '......\n' +
+              '......\n' +
+              '......\n' +
+              '......\n';
+
+world.init(board, ruleString);
+world.evolve();
+world.toString();
+```
+
+##License
+
+Free to use and abuse under the MIT license.
+http://www.opensource.org/licenses/mit-license.php
