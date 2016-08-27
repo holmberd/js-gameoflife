@@ -3,7 +3,6 @@
 ## Game Of Life 2016/08/26
 + Supports Arbitrary World Rules: http://www.conwaylife.com/wiki/List_of_Life-like_cellular_automata
 
-_ World Constructor:_
 ```
 @constructor function World() - Represents a World.
 @param {string} str - The board of the game.
