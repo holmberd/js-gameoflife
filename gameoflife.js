@@ -3,24 +3,25 @@
  * Supports Arbitrary World Rules: http://www.conwaylife.com/wiki/List_of_Life-like_cellular_automata
  *
  * Game-Of-Life World Constructor 
- * Constructor: World()
- * @param {String} 
- * @return World {Object}
+ * @constructor function World() - Represents a World.
+ * @param {string} str - The board of the game.
+ * @param {string} ruleString - The rules of the game.
+ * @return World {object}
  *
  * Methods:
  *
- * World.init(String, String)
- * World.getCell({ row: Int, col: Int })
- * World.setCell({ row: Int, col: Int })
- * World.Location(Int, Int)
+ * World.init(string, string)
+ * World.getCell({ row: int, col: int })
+ * World.setCell({ row: int, col: int })
+ * World.Location(int, int)
  * World.getRules()
- * World.setRules(String)
+ * World.setRules(string)
  * World.getGeneration()
  * World.getRows()
  * World.getCols()
  * World.evolve()
  * World.toString()
- * World.inBound( { row: Int, col: Int })
+ * World.inBound( { row: int, col: int })
 
  * Example:
  *
@@ -49,7 +50,7 @@ function World() {
     generation: 0,
   };
 
-  this.init = function(str, rulestring) {
+  this.init = function(str, ruleString) {
     if (charError(str)) {
       throw new Error('String must only contain the following characters: [ ".", "*", "\n" ]');
     }
@@ -59,7 +60,7 @@ function World() {
       board.rows = checkRows(str);
       board.cols = checkCols(str);
       board.grid = makeGrid(str);
-      this.setRules(rulestring);
+      this.setRules(ruleString);
     }
   };
 
