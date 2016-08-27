@@ -9,11 +9,7 @@
 
 /**
  * Game Of Life 2016/08/26
- *
- * Game Rules:
- * # Any live cell with fewer than two or more than three live neighbors dies.
- * # Any live cell with two or three live neighbors lives on to the nextgeneration.
- * # Any dead cell with exactly three live neighbors becomes a live cell.
+ * Supports Arbitrary World Rules: http://www.conwaylife.com/wiki/List_of_Life-like_cellular_automata
  *
  * GameOfLife World Constructor 
  * Constructor: World()
@@ -21,18 +17,24 @@
  * @return World {Object}
  *
  * Methods:
- * World.init(String)
+ *
+ * World.init(String, String)
+ * World.getCell({ row: Int, col: Int })
+ * World.setCell({ row: Int, col: Int })
+ * World.Location(Int, Int)
+ * World.getRules()
+ * World.setRules(String)
  * World.getGeneration()
  * World.getRows()
  * World.getCols()
  * World.evolve()
- * World.print()
- * World.inBound(Location)
- * World.getCell(Location)
+ * World.toString()
+ * World.inBound( { row: Int, col: Int })
 
  * Example:
- * var world = new World();
  *
+ * var world = new World();
+ * var ruleString = '123/3';
  * var board =  '......\n' +
                 '***...\n' +
                 '......\n' +
@@ -40,28 +42,33 @@
                 '......\n' +
                 '......\n';
  *
- * world.init(board);
+ * world.init(board, ruleString);
  * world.evolve();
- * world.print();
+ * world.toString();
+ *
  */
 
 function World() {
+  
+  var rules = null;
+  var board = {
+    grid: [],
+    rows: null,
+    cols: null,
+    generation: 0,
+  };
 
-  var rows = null,
-      cols = null,
-      worldGrid = [],
-      generation = 0;
-
-  this.init = function(str) {
+  this.init = function(str, rulestring) {
     if (charError(str)) {
       throw new Error('String must only contain the following characters: [ ".", "*", "\n" ]');
     }
     else if (rowError(str)) {
       throw new Error('String rows must be of the same length.');
     } else {
-      rows = getRows(str);
-      cols = getCols(str);
-      worldGrid = makeGrid(str);
+      board.rows = checkRows(str);
+      board.cols = checkCols(str);
+      board.grid = makeGrid(str);
+      this.setRules(rulestring);
     }
   };
 
@@ -69,42 +76,42 @@ function World() {
     this.state = state;
   }
 
-  function Location(row, col) {
+  this.Location = function(row, col) {
     this.row = row;
     this.col = col;
-  }
+  };
 
   this.getCell = function(location) {
-    return worldGrid[location.row][location.col];
+    return board.grid[location.row][location.col];
   };
 
   this.setCell = function(location, state) {
-    worldGrid[location.row][location.col] = state;
+    board.grid[location.row][location.col] = state;
   };
 
   this.getGeneration = function() {
-    return generation;
+    return board.generation;
   };
 
   this.getRows = function() {
-    return rows;
+    return board.rows;
   };
 
   this.getCols = function() {
-    return cols;
+    return board.cols;
   };
 
   this.inBounds = function(location) {
-    if (location.row > rows || location.row < 0) return false;
-    if (location.col > cols || location.col < 0) return false;
+    if (location.row > board.rows || location.row < 0) return false;
+    if (location.col > board.cols || location.col < 0) return false;
     return true;
   };
 
   this.toString = function() {
     var str = '';
-    for (var row = 0; row < rows; row++) {
-      for (var col = 0; col < cols; col++) {
-        if (worldGrid[row][col].state) str += '*';
+    for (var row = 0; row < board.rows; row++) {
+      for (var col = 0; col < board.cols; col++) {
+        if (board.grid[row][col].state) str += '*';
         else str += '.'; 
       }
       str += '\n';
@@ -113,9 +120,9 @@ function World() {
   };
 
   this.evolve = function(){
-    var grid = worldGrid;
-    worldGrid = evolveGrid.call(this, grid);
-    generation++;
+    var grid = board.grid;
+    board.grid = evolveGrid.call(this, grid);
+    board.generation++;
   };
 
   function evolveGrid(grid) {
@@ -131,31 +138,38 @@ function World() {
   }
 
   function evolveCell(grid, rowIndex, colIndex, cell) {
-    var cellLocation = new Location(rowIndex, colIndex);
-    var aliveNeighbors = countNeighbors.call(this, cellLocation);
+    var cellLocation = new this.Location(rowIndex, colIndex);
+    var aliveneighbours = countneighbours.call(this, cellLocation);
+    return onRules.call(this, cell, aliveneighbours);
+  }
+
+  function onRules(cell, aliveneighbours) {
+    var rules = this.getRules();
     if (cell.state) {
-        if (aliveNeighbors < 2 || aliveNeighbors > 3) { 
-          return new Cell(false);
-        } else {  // 
+      for (var i = 0; i < rules.survival.length; i++) {
+        if (Number(rules.survival[i]) === aliveneighbours) {
           return new Cell(true);
-        }
-      } else {
-        if (aliveNeighbors === 3) { 
-          return new Cell(true);
-        } else {
-          return new Cell(false);
         }
       }
+      return new Cell(false);
+    } else {
+      for (var n = 0; n < rules.born.length; n++) {
+        if (Number(rules.born[n]) === aliveneighbours) {
+          return new Cell(true);
+        }
+      }
+      return new Cell(false);
     }
+  }
 
-  function countNeighbors(location) {
-    var neighbors = [[0, -1], [1, -1], [1, 0], [1, 1], [0, 1], [-1, 1], [-1, 0], [-1, -1]], // neighbor cell positions to check
+  function countneighbours(location) {
+    var neighbours = [[0, -1], [1, -1], [1, 0], [1, 1], [0, 1], [-1, 1], [-1, 0], [-1, -1]], // neighbor cell positions to check
     count = 0,
     neighborLocation = null,
     neighborCell = null;
 
-    for (var i = 0; i < neighbors.length; i++) {  // loop over cells and count alive neighbors
-      neighborLocation = new Location(location.row + neighbors[i][0], location.col + neighbors[i][1]);
+    for (var i = 0; i < neighbours.length; i++) {  // loop over cells and count alive neighbours
+      neighborLocation = new this.Location(location.row + neighbours[i][0], location.col + neighbours[i][1]);
       if (this.inBounds(neighborLocation)) {
         neighborCell = this.getCell(neighborLocation);
         if (neighborCell.state) {
@@ -165,6 +179,18 @@ function World() {
     }
     return count;
   }
+
+  this.setRules = function(ruleString) {
+    var rulesArr = ruleString.split('/');
+    rules = {
+      survival: rulesArr[0].split(''),
+      born: rulesArr[1].split('')
+    };
+  };
+
+  this.getRules = function() {
+    return rules;
+  };
 
   function makeGrid(str) {
     var gridArr = getRowsArray(str);
@@ -185,11 +211,11 @@ function World() {
     else return new Cell(true);
   }
 
-  function getCols(str) {
+  function checkCols(str) {
     return str.indexOf('\n')-1;
   }
 
-  function getRows(str) {
+  function checkRows(str) {
     return getRowsArray(str).length - 1;
   }
 
@@ -216,7 +242,9 @@ function World() {
 
 }
 
-/********************************************************************/
+module.exports = World;
+
+/********************************************************************
 
 var world = new World();
 
@@ -228,8 +256,11 @@ var board =
   '......\n' +
   '......\n';
 
-world.init(board);
+var rulestring = '23/3';
+
+world.init(board, rulestring);
 console.log(world.toString());
 world.evolve();
 console.log(world.toString());
+*/
 
