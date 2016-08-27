@@ -1,17 +1,8 @@
 /**
-* TODO:
-* - Add node.js support, export.module
-* - Add render string in console function
-* - Add color cell support, Cell { state: Bool, color: String }
-* - Add arbitrary rulestring: http://www.conwaylife.com/wiki/List_of_Life-like_cellular_automata
-* - Add arbitrary rulestring's tests
-*/
-
-/**
  * Game Of Life 2016/08/26
  * Supports Arbitrary World Rules: http://www.conwaylife.com/wiki/List_of_Life-like_cellular_automata
  *
- * GameOfLife World Constructor 
+ * Game-Of-Life World Constructor 
  * Constructor: World()
  * @param {String} 
  * @return World {Object}
@@ -139,22 +130,22 @@ function World() {
 
   function evolveCell(grid, rowIndex, colIndex, cell) {
     var cellLocation = new this.Location(rowIndex, colIndex);
-    var aliveneighbours = countneighbours.call(this, cellLocation);
-    return onRules.call(this, cell, aliveneighbours);
+    var aliveNeighbours = countNeighbours.call(this, cellLocation);
+    return onRules.call(this, cell, aliveNeighbours);
   }
 
-  function onRules(cell, aliveneighbours) {
+  function onRules(cell, aliveNeighbours) {
     var rules = this.getRules();
     if (cell.state) {
       for (var i = 0; i < rules.survival.length; i++) {
-        if (Number(rules.survival[i]) === aliveneighbours) {
+        if (Number(rules.survival[i]) === aliveNeighbours) {
           return new Cell(true);
         }
       }
       return new Cell(false);
     } else {
       for (var n = 0; n < rules.born.length; n++) {
-        if (Number(rules.born[n]) === aliveneighbours) {
+        if (Number(rules.born[n]) === aliveNeighbours) {
           return new Cell(true);
         }
       }
@@ -162,17 +153,17 @@ function World() {
     }
   }
 
-  function countneighbours(location) {
-    var neighbours = [[0, -1], [1, -1], [1, 0], [1, 1], [0, 1], [-1, 1], [-1, 0], [-1, -1]], // neighbor cell positions to check
+  function countNeighbours(location) {
+    var neighbours = [[0, -1], [1, -1], [1, 0], [1, 1], [0, 1], [-1, 1], [-1, 0], [-1, -1]], // neighbour cell positions to check
     count = 0,
-    neighborLocation = null,
-    neighborCell = null;
+    neighbourLocation = null,
+    neighbourCell = null;
 
     for (var i = 0; i < neighbours.length; i++) {  // loop over cells and count alive neighbours
-      neighborLocation = new this.Location(location.row + neighbours[i][0], location.col + neighbours[i][1]);
-      if (this.inBounds(neighborLocation)) {
-        neighborCell = this.getCell(neighborLocation);
-        if (neighborCell.state) {
+      neighbourLocation = new this.Location(location.row + neighbours[i][0], location.col + neighbours[i][1]);
+      if (this.inBounds(neighbourLocation)) {
+        neighbourCell = this.getCell(neighbourLocation);
+        if (neighbourCell.state) {
           count++;  
         }
       }
@@ -242,25 +233,4 @@ function World() {
 
 }
 
-module.exports = World;
-
-/********************************************************************
-
-var world = new World();
-
-var board =
-  '......\n' +
-  '***...\n' +
-  '......\n' +
-  '......\n' +
-  '......\n' +
-  '......\n';
-
-var rulestring = '23/3';
-
-world.init(board, rulestring);
-console.log(world.toString());
-world.evolve();
-console.log(world.toString());
-*/
-
+//module.exports = World;
