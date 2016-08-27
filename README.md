@@ -1,37 +1,36 @@
 # js-gameoflife
 
 ## Game Of Life 2016/08/26
-*Supports Arbitrary World Rules: http://www.conwaylife.com/wiki/List_of_Life-like_cellular_automata
++ Supports Arbitrary World Rules: http://www.conwaylife.com/wiki/List_of_Life-like_cellular_automata
 
-_Game-Of-Life World Constructor_
 ```
-Constructor: World()
-@param {String} 
-@return World {Object}
+@constructor function World() - Represents a World.
+@param {string} str - The board of the game.
+@param {string} ruleString - The rules of the game.
+@return World {object}
 ```
 
-_Methods_:
+###Methods:
++ World.init(string, string)
++ World.getCell({ row: int, col: int })
++ World.setCell({ row: int, col: int })
++ World.Location(int, int)
++ World.getRules()
++ World.setRules(string)
++ World.getGeneration()
++ World.getRows()
++ World.getCols()
++ World.evolve()
++ World.toString()
++ World.inBound( { row: int, col: int })
 
- * World.init(String, String)
- * World.getCell({ row: Int, col: Int })
- * World.setCell({ row: Int, col: Int })
- * World.Location(Int, Int)
- * World.getRules()
- * World.setRules(String)
- * World.getGeneration()
- * World.getRows()
- * World.getCols()
- * World.evolve()
- * World.toString()
- * World.inBound( { row: Int, col: Int })
-
- _Example_:
+###Example:
 
  ```
  var world = new World();
  var ruleString = '123/3';
 
- var board =  '......\n' +
+ var board = '......\n' +
               '***...\n' +
               '......\n' +
               '......\n' +
@@ -40,7 +39,15 @@ _Methods_:
 
 world.init(board, ruleString);
 world.evolve();
-world.toString();
+console.log(world.toString());
+
+$ > 
+. * . . . .
+. * . . . .
+. * . . . .
+. . . . . .
+. . . . . .
+. . . . . .
 ```
 
 ##License
