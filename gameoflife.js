@@ -12,11 +12,12 @@
  *
  * World.init(string, string)
  * World.getCell({ row: int, col: int })
- * World.setCell({ row: int, col: int })
+ * World.setCell({ row: int, col: int }, { state: bool })
  * World.Location(int, int)
  * World.getRules()
  * World.setRules(string)
  * World.getGeneration()
+ * World.getAliveCount()
  * World.getRows()
  * World.getCols()
  * World.evolve()
@@ -48,15 +49,11 @@ function World() {
     rows: null,
     cols: null,
     generation: 0,
+    aliveCount: 0
   };
 
   this.init = function(str, ruleString) {
-    if (charError(str)) {
-      throw new Error('String must only contain the following characters: [ ".", "*", "\n" ]');
-    }
-    else if (rowError(str)) {
-      throw new Error('String rows must be of the same length.');
-    } else {
+    if (!checkError(str)) {
       board.rows = checkRows(str);
       board.cols = checkCols(str);
       board.grid = makeGrid(str);
@@ -85,6 +82,10 @@ function World() {
     return board.generation;
   };
 
+  this.getAliveCount = function() {
+    return board.aliveCount;
+  };
+
   this.getRows = function() {
     return board.rows;
   };
@@ -94,8 +95,8 @@ function World() {
   };
 
   this.inBounds = function(location) {
-    if (location.row > board.rows || location.row < 0) return false;
-    if (location.col > board.cols || location.col < 0) return false;
+    if (location.row > (board.rows - 1) || location.row < 0) return false;
+    if (location.col > (board.cols - 1) || location.col < 0) return false;
     return true;
   };
 
@@ -140,13 +141,16 @@ function World() {
     if (cell.state) {
       for (var i = 0; i < rules.survival.length; i++) {
         if (Number(rules.survival[i]) === aliveNeighbours) {
+          board.aliveCount++;
           return new Cell(true);
         }
       }
+      board.aliveCount--;
       return new Cell(false);
     } else {
       for (var n = 0; n < rules.born.length; n++) {
         if (Number(rules.born[n]) === aliveNeighbours) {
+          board.aliveCount++;
           return new Cell(true);
         }
       }
@@ -204,11 +208,11 @@ function World() {
   }
 
   function checkCols(str) {
-    return str.indexOf('\n')-1;
+    return str.indexOf('\n');
   }
 
   function checkRows(str) {
-    return getRowsArray(str).length - 1;
+    return getRowsArray(str).length;
   }
 
   function getRowsArray(str) {
@@ -228,6 +232,16 @@ function World() {
       if (str[i] !== '\n' && str[i] !== '.' && str[i] !== '*') {
         return true;
       }
+    }
+    return false;
+  }
+
+  function checkError(str){
+    if (charError(str)) {
+      throw new Error('String must only contain the following characters: [ ".", "*", "\n" ]');
+    }
+    else if (rowError(str)) {
+      throw new Error('String rows must be of the same length.');
     }
     return false;
   }
