@@ -1,4 +1,7 @@
 /**
+ * Copyright(c) 2016 Dag Holmberg
+ * MIT Licensed
+ * 
  * Game Of Life 2016/08/26
  * Supports Arbitrary World Rules: http://www.conwaylife.com/wiki/List_of_Life-like_cellular_automata
  *
