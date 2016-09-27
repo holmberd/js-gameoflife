@@ -9,7 +9,7 @@ World - Represents a World.
 @constructor
 @return {object} World
 ```
-###@typedef
+###@Typedef
 ```
 @typedef {state: {bool}} Cell
 @typedef {row: {number}, col: {number}} Location
@@ -19,7 +19,7 @@ World - Represents a World.
 ###@Public API Methods:
 + World.init({string}, {string}) - Initializes the World with board and rules.
 + World.getCell({Location})
-+ World.setCell({Location}, {object})
++ World.setCell({Location}, {Cell})
 + World.getRules()
 + World.getGeneration()
 + World.getAliveCount()
