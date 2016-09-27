@@ -1,0 +1,26 @@
+{
+  "name": "gameoflife-rulestring",
+  "version": "1.0.0",
+  "description": "Game of Life with support for arbitrary world rules",
+  "main": "gameoflife.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/holmberd/js-gameoflife.git"
+  },
+  "keywords": [
+    "conway",
+    "game",
+    "of",
+    "life",
+    "rules"
+  ],
+  "author": "Dag Holmberg",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/holmberd/js-gameoflife/issues"
+  },
+  "homepage": "https://github.com/holmberd/js-gameoflife#readme"
+}
