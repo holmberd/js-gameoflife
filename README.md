@@ -11,7 +11,9 @@ World - Represents a World.
 ```
 ###@typedef
 ```
+@typedef {state: {bool}} Cell
 @typedef {row: {number}, col: {number}} Location
+@typedef {survival: {string}, born: {string}} rules
 ```
 
 ###@Public API Methods:
@@ -25,7 +27,7 @@ World - Represents a World.
 + World.getCols()
 + World.evolve()
 + World.toString()
-+ World.inBound(location)
++ World.inBound({Location})
 
 ###Example:
 
