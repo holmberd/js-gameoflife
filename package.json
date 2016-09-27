@@ -1,6 +1,6 @@
 {
   "name": "gameoflife-rulestring",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Game of Life with support for arbitrary world rules",
   "main": "gameoflife.js",
   "scripts": {
