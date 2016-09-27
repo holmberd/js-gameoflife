@@ -5,15 +5,19 @@
 
 ###@Constructor
 ```
-new World() - Represents a World.
+World - Represents a World.
 @constructor
 @return {object} World
 ```
+###@typedef
+```
+@typedef {row: {number}, col: {number}} Location
+```
 
 ###@Public API Methods:
-+ World.init(board, ruleString)
-+ World.getCell(location)
-+ World.setCell(location, cell)
++ World.init({string}, {string}) - Initializes the World with board and rules.
++ World.getCell({Location})
++ World.setCell({Location}, {object})
 + World.getRules()
 + World.getGeneration()
 + World.getAliveCount()
