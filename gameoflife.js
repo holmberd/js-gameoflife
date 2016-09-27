@@ -5,32 +5,31 @@
  * Game Of Life 2016/08/26
  * Supports Arbitrary World Rules: http://www.conwaylife.com/wiki/List_of_Life-like_cellular_automata
  *
- * Game-Of-Life World Constructor 
- * @constructor function World() - Represents a World.
- * @param {string} str - The board of the game.
- * @param {string} ruleString - The rules of the game.
+ * Game-of-Life World Constructor 
+ * function World() - Represents a World.
+ * @constructor
  * @return World {object}
  *
- * Methods:
+ * @puplic API Methods:
  *
- * World.init(string, string)
- * World.getCell({ row: int, col: int })
- * World.setCell({ row: int, col: int }, { state: bool })
- * World.Location(int, int)
+ * World.init(string, ruleString)
+ * World.getCell(location)
+ * World.setCell(location, cell)
+ * World.Location(row, col)
  * World.getRules()
- * World.setRules(string)
  * World.getGeneration()
  * World.getAliveCount()
  * World.getRows()
  * World.getCols()
  * World.evolve()
  * World.toString()
- * World.inBound( { row: int, col: int })
+ * World.inBound(location)
 
  * Example:
  *
+ * var world = require('./gameoflife.js');
  * var world = new World();
- * var ruleString = '123/3';
+ * var ruleString = '23/3'; (B3/S23 - Conway's Life, or try B3/S1234 - Mazectric)
  * var board =  '......\n' +
                 '***...\n' +
                 '......\n' +
@@ -44,10 +43,31 @@
  *
  */
 
+/**
+ * Represents a World.
+ * @constructor
+ * @return {object} World 
+ */
 function World() {
-  
-  var rules = null;
-  var board = {
+
+/**
+ * @protected - Stores the `world` game rules. 
+ * @typedef {object} rules
+ * @property {string} survival - Represents rules for `cell` survival.
+ * @property {string} born - Represents rules for `cell` creation.
+ */
+  var _rules = {}; 
+
+/**
+ * A complete `board` representing the `world` state.
+ * @typedef {Object} board
+ * @property {array} grid - Container for all the cells in the `world`.
+ * @property {number} row - Number of rows on the `board`.
+ * @property {number} cols - Number of columns on the `board`.
+ * @property {number} generation - Number of times the `world` has evolved.
+ * @property {number} aliveCount - Number of alive cells in the `world`.
+ */
+  var _board = {
     grid: [],
     rows: null,
     cols: null,
@@ -55,59 +75,127 @@ function World() {
     aliveCount: 0
   };
 
+/**
+ * Initializes the World with board and rules.
+ * @public
+ * @param {string} str - The board of the game.
+ * @param {string} ruleString - The rules of the game.
+ * @return {object} World
+ */
   this.init = function(str, ruleString) {
-    if (!checkError(str)) {
-      board.rows = checkRows(str);
-      board.cols = checkCols(str);
-      board.grid = makeGrid(str);
-      this.setRules(ruleString);
+    if (!_checkError(str)) {
+      _board.rows = _checkRows(str);
+      _board.cols = _checkCols(str);
+      _board.grid = _createGrid(str);
+      _setRules(_createRules(ruleString));
+      console.log(_rules);
     }
+    return this;
   };
 
+/**
+ * Represents a Cell.
+ * @constructor
+ * @protected
+ * @return {object} Cell
+ */
   function Cell(state) {
     this.state = state;
+    return this;
   }
 
+/**
+ * Represents a Location.
+ * @constructor
+ * @public
+ * @param {number} row 
+ * @param {number} col
+ * @return {object} Location
+ */
   this.Location = function(row, col) {
     this.row = row;
     this.col = col;
+    return this;
   };
 
+/**
+ * Returns a `Cell` from a given `location`.
+ * @public
+ * @param {object} location - ({ row: {number}, col: {number} }) 
+ * @return {object} Cell
+ */
   this.getCell = function(location) {
-    return board.grid[location.row][location.col];
+    return _board.grid[location.row][location.col];
   };
 
+/**
+ * Set a cells `state` at a given `location`.
+ * @public
+ * @param {object} location - ({ row: {number}, col: {number} })
+ * @param {boolean} state
+ */
   this.setCell = function(location, state) {
-    board.grid[location.row][location.col] = state;
+    _board.grid[location.row][location.col] = state;
   };
 
+/**
+ * Returns the world's current `generation`.
+ * @public
+ * @return {number} board.generation
+ */
   this.getGeneration = function() {
-    return board.generation;
+    return _board.generation;
   };
 
+/**
+ * Returns number of alive cells in the `world`.
+ * @public
+ * @return {number} board.aliveCount
+ */
   this.getAliveCount = function() {
-    return board.aliveCount;
+    return _board.aliveCount;
   };
 
+/**
+ * Returns number of rows on the `board`.
+ * @public
+ * @return {number} board.rows
+ */
   this.getRows = function() {
-    return board.rows;
+    return _board.rows;
   };
 
+/**
+ * Returns number of columns on the `board`.
+ * @public
+ * @return {number} board.cols
+ */
   this.getCols = function() {
-    return board.cols;
+    return _board.cols;
   };
 
+/**
+ * If `location` is inside the bounds of the `board` return `true`.
+ * @public
+ * @param {object} location - { row: {number}, col: {number} }
+ * @return {boolean}
+ */
   this.inBounds = function(location) {
-    if (location.row > (board.rows - 1) || location.row < 0) return false;
-    if (location.col > (board.cols - 1) || location.col < 0) return false;
+    if (location.row > (_board.rows - 1) || location.row < 0) return false;
+    if (location.col > (_board.cols - 1) || location.col < 0) return false;
     return true;
   };
 
+/**
+ * Converts the current `board` to a `string`.
+ * @public
+ * @return {string}
+ */
   this.toString = function() {
     var str = '';
-    for (var row = 0; row < board.rows; row++) {
-      for (var col = 0; col < board.cols; col++) {
-        if (board.grid[row][col].state) str += '*';
+    for (var row = 0; row < _board.rows; row++) {
+      for (var col = 0; col < _board.cols; col++) {
+        if (_board.grid[row][col].state) str += '*';
         else str += '.'; 
       }
       str += '\n';
@@ -115,45 +203,81 @@ function World() {
     return str;
   };
 
+/**
+ * Evolves the current `world` state one `generation`.
+ * @public
+ * @return {object} World
+ */
   this.evolve = function(){
-    var grid = board.grid;
-    board.grid = evolveGrid.call(this, grid);
-    board.generation++;
+    var grid = _board.grid;
+    _board.grid = _evolveGrid.call(this, grid);
+    _board.generation++;
+    return this;
   };
 
-  function evolveGrid(grid) {
+/**
+ * Evolves the current `grid` state.
+ * @protected
+ * @param {array} grid
+ * @return {array} grid
+ */
+  function _evolveGrid(grid) {
     return grid.map(function(row, rowIndex) {
-      return evolveRow.call(this, grid, rowIndex, row); 
+      return _evolveRow.call(this, grid, rowIndex, row); 
     }, this);
   }
 
-  function evolveRow(grid, rowIndex, row) {
+/**
+ * Evolves a row in the current `grid`.
+ * @protected
+ * @param {array} grid
+ * @param {number} rowIndex
+ * @param {array} row
+ * @return {array}
+ */
+  function _evolveRow(grid, rowIndex, row) {
     return row.map(function(cell, colIndex) {
-      return evolveCell.call(this, grid, rowIndex, colIndex, cell);
+      return _evolveCell.call(this, grid, rowIndex, colIndex, cell);
     }, this);
   }
 
-  function evolveCell(grid, rowIndex, colIndex, cell) {
+/**
+ * Evolves a `Cell` in the `grid`.
+ * @protected
+ * @param {array} grid
+ * @param {number} rowIndex
+ * @param {number} colIndex
+ * @param {object} cell
+ * @return {object} Cell
+ */
+  function _evolveCell(grid, rowIndex, colIndex, cell) {
     var cellLocation = new this.Location(rowIndex, colIndex);
-    var aliveNeighbours = countNeighbours.call(this, cellLocation);
-    return onRules.call(this, cell, aliveNeighbours);
+    var aliveNeighbours = _countNeighbours.call(this, cellLocation);
+    return _onRules.call(this, cell, aliveNeighbours);
   }
 
-  function onRules(cell, aliveNeighbours) {
+/**
+ * Evolves a `Cell` according to the set `world` rules.
+ * @protected
+ * @param {object} cell
+ * @param {number} aliveNeighbours
+ * @return {object} Cell
+ */
+  function _onRules(cell, aliveNeighbours) {
     var rules = this.getRules();
     if (cell.state) {
       for (var i = 0; i < rules.survival.length; i++) {
         if (Number(rules.survival[i]) === aliveNeighbours) {
-          board.aliveCount++;
+          _board.aliveCount++;
           return new Cell(true);
         }
       }
-      board.aliveCount--;
+      _board.aliveCount--;
       return new Cell(false);
     } else {
       for (var n = 0; n < rules.born.length; n++) {
         if (Number(rules.born[n]) === aliveNeighbours) {
-          board.aliveCount++;
+          _board.aliveCount++;
           return new Cell(true);
         }
       }
@@ -161,7 +285,13 @@ function World() {
     }
   }
 
-  function countNeighbours(location) {
+/**
+ * Returns the number of alive `Cell` neighbours for a given `Location`.
+ * @protected
+ * @param {object} location
+ * @return {number}
+ */
+  function _countNeighbours(location) {
     var neighbours = [[0, -1], [1, -1], [1, 0], [1, 1], [0, 1], [-1, 1], [-1, 0], [-1, -1]], // neighbour cell positions to check
     count = 0,
     neighbourLocation = null,
@@ -179,58 +309,128 @@ function World() {
     return count;
   }
 
-  this.setRules = function(ruleString) {
+/**
+ * Creates `rules` type from `ruleString`.
+ * @protected
+ * @param {string} ruleString
+ * @returns {object} rules
+ */
+  function _createRules(ruleString) {
     var rulesArr = ruleString.split('/');
-    rules = {
+    return {
       survival: rulesArr[0].split(''),
       born: rulesArr[1].split('')
     };
-  };
+  }
 
+/**
+ * Helper function for setting `rules`.
+ * @protected
+ * @param {object} rules
+ * @returns {object} rules
+ */
+  function _setRules(rules) {
+    _rules = rules;
+    return _rules;
+  }
+
+/**
+ * Get game `rules`
+ * @public
+ * @returns {object} rules
+ */
   this.getRules = function() {
-    return rules;
+    return _rules;
   };
 
-  function makeGrid(str) {
-    var gridArr = getRowsArray(str);
+/**
+ * Helper function to create a `grid` from `string`.
+ * @protected
+ * @param {string} str
+ * @returns {array} grid
+ */
+  function _createGrid(str) {
+    var gridArr = _getRowsArray(str);
     return gridArr.map(function(row) {
-      return convertRow(row);
+      return _convertRow(row);
     }, this);
   }
 
-  function convertRow(row) {
+/**
+ * Helper function to `_createGrid`.
+ * @protected
+ * @param {array} row
+ * @returns {array}
+ */
+  function _convertRow(row) {
     var rowArr = row.split('');
     return rowArr.map(function(char) {
-      return convertChar(char);
+      return _convertChar(char);
     }, this);
   }
 
-  function convertChar(char) {
+/**
+ * Helper function to `_createGrid`.
+ * @protected
+ * @param {string} char
+ * @returns {object} Cell
+ */
+  function _convertChar(char) {
     if (char === '.') return new Cell(false);
     else return new Cell(true);
   }
 
-  function checkCols(str) {
+/**
+ * Return number of newlines in a `string`.
+ * @protected
+ * @param {string} str
+ * @returns {number}
+ */
+  function _checkCols(str) {
     return str.indexOf('\n');
   }
 
-  function checkRows(str) {
-    return getRowsArray(str).length;
+/**
+ * Returns length of each `rowsArray`.
+ * @protected
+ * @param {string} str
+ * @returns {number}
+ */
+  function _checkRows(str) {
+    return _getRowsArray(str).length;
   }
 
-  function getRowsArray(str) {
+/**
+ * Returns an `array` containing each row.
+ * @protected
+ * @param {string} str
+ * @returns {array}
+ */
+  function _getRowsArray(str) {
     return str.split('\n').slice(0, -1);
   }
 
-  function rowError(str) {
-    var rowsArray = getRowsArray(str);
+/**
+ * If all rows are of equal length then return `true`.
+ * @protected
+ * @param {string} str
+ * @returns {boolean}
+ */
+  function _rowError(str) {
+    var rowsArray = _getRowsArray(str);
     return !rowsArray.every(isEqualLength);
     function isEqualLength(row) {
       return rowsArray[0].length === row.length;
     }
   }
   
-  function charError (str) {
+/**
+ * If `string` contains no illegal characters then return `true`.
+ * @protected
+ * @param {string} str
+ * @returns {boolean}
+ */
+  function _charError (str) {
     for (var i = 0; i < str.length; i++) {
       if (str[i] !== '\n' && str[i] !== '.' && str[i] !== '*') {
         return true;
@@ -239,16 +439,25 @@ function World() {
     return false;
   }
 
-  function checkError(str){
-    if (charError(str)) {
+/**
+ * Error handler, checks for `rowError` & `_charError`, if error returns `true`.
+ * @protected
+ * @param {string} str
+ * @returns {error | boolean}
+ */
+  function _checkError(str) {
+    if (_charError(str)) {
       throw new Error('String must only contain the following characters: [ ".", "*", "\n" ]');
     }
-    else if (rowError(str)) {
+    else if (_rowError(str)) {
       throw new Error('String rows must be of the same length.');
     }
     return false;
   }
 
+  return this;
 }
 
-//module.exports = World;
+module.exports = World;
+
+
