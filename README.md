@@ -3,17 +3,17 @@
 ## Game of Life
 + Supports Arbitrary World Rules: http://www.conwaylife.com/wiki/List_of_Life-like_cellular_automata
 
+###@Constructor
 ```
-function World() - Represents a World.
+new World() - Represents a World.
 @constructor
-@return World {object}
+@return {object} World
 ```
 
-###Public API Methods:
-+ World.init(string, ruleString)
+###@Public API Methods:
++ World.init(board, ruleString)
 + World.getCell(location)
 + World.setCell(location, cell)
-+ World.Location(row, col)
 + World.getRules()
 + World.getGeneration()
 + World.getAliveCount()
@@ -27,7 +27,7 @@ function World() - Represents a World.
 
 ```
 $ > var world = new World();
-$ > var ruleString = '123/3';
+$ > var ruleString = '23/3'; (B3/S23 - Conway's Life)
  
 $ > var board = '......\n' +
              	'***...\n' +
