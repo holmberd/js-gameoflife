@@ -5,16 +5,21 @@
  * Game Of Life
  * Supports Arbitrary World Rules: http://www.conwaylife.com/wiki/List_of_Life-like_cellular_automata
  *
- * Game-of-Life World Constructor 
- * function World() - Represents a World.
- * @constructor
- * @return World {object}
+ * #Game-of-Life World Constructor 
+ * World - Represents a World.
+ * 
+ * #Game-of-Life World Initializer
+ * World.init({string}, {string}) - Initializes the World with board and rules.
  *
- * @puplic API Methods:
+ * #Type Definitions
+ * @typedef {state: {bool}} Cell
+ * @typedef {row: {number}, col: {number}} Location
+ * @typedef {survival: {string}, born:{string}} rules
  *
- * World.init(board, ruleString)
- * World.getCell(location)
- * World.setCell(location, cell)
+ * #Puplic API Methods:
+ * World.init({string}, {string})
+ * World.getCell({Location})
+ * World.setCell({Location}, {Cell})
  * World.getRules()
  * World.getGeneration()
  * World.getAliveCount()
@@ -22,7 +27,7 @@
  * World.getCols()
  * World.evolve()
  * World.toString()
- * World.inBound(location)
+ * World.inBound({Location})
 
  * Example:
  *
@@ -44,13 +49,12 @@
 /**
  * Represents a World.
  * @constructor
- * @return {object} World 
+ * @return {object} 
  */
 function World() {
 
 /**
  * @protected - Stores the `world` game rules. 
- * @typedef {object} rules
  * @property {string} survival - Represents rules for `cell` survival.
  * @property {string} born - Represents rules for `cell` creation.
  */
@@ -58,7 +62,6 @@ function World() {
 
 /**
  * A complete `board` representing the `world` state.
- * @typedef {Object} board
  * @property {array} grid - Container for all the cells in the `world`.
  * @property {number} row - Number of rows on the `board`.
  * @property {number} cols - Number of columns on the `board`.
@@ -76,9 +79,9 @@ function World() {
 /**
  * Initializes the World with board and rules.
  * @public
- * @param {string} str - The board of the game.
- * @param {string} ruleString - The rules of the game.
- * @return {object} World
+ * @param {string} str - A string representing the board of the game.
+ * @param {string} ruleString - A string representing the rules of the game.
+ * @return {object}
  */
   this.init = function(str, ruleString) {
     if (!_checkError(str)) {
@@ -94,7 +97,7 @@ function World() {
 /**
  * Represents a Cell.
  * @constructor
- * @return {object} Cell
+ * @return {Cell}
  */
   function Cell(state) {
     this.state = state;
@@ -106,7 +109,7 @@ function World() {
  * @constructor
  * @param {number} row 
  * @param {number} col
- * @return {object} Location
+ * @return {Location}
  */
   function Location(row, col) {
     this.row = row;
@@ -117,8 +120,8 @@ function World() {
 /**
  * Returns a `Cell` from a given `location`.
  * @public
- * @param {object} location - ({ row: {number}, col: {number} }) 
- * @return {object} Cell
+ * @param {Location} location - ({ row: {number}, col: {number} }) 
+ * @return {Cell}
  */
   this.getCell = function(location) {
     return _board.grid[location.row][location.col];
@@ -127,7 +130,7 @@ function World() {
 /**
  * Set a cells `state` at a given `location`.
  * @public
- * @param {object} location - ({ row: {number}, col: {number} })
+ * @param {Location} location - ({ row: {number}, col: {number} })
  * @param {boolean} state
  */
   this.setCell = function(location, state) {
@@ -137,7 +140,7 @@ function World() {
 /**
  * Returns the world's current `generation`.
  * @public
- * @return {number} board.generation
+ * @return {number}
  */
   this.getGeneration = function() {
     return _board.generation;
@@ -146,7 +149,7 @@ function World() {
 /**
  * Returns number of alive cells in the `world`.
  * @public
- * @return {number} board.aliveCount
+ * @return {number}
  */
   this.getAliveCount = function() {
     return _board.aliveCount;
@@ -164,7 +167,7 @@ function World() {
 /**
  * Returns number of columns on the `board`.
  * @public
- * @return {number} board.cols
+ * @return {number}
  */
   this.getCols = function() {
     return _board.cols;
@@ -173,7 +176,7 @@ function World() {
 /**
  * If `location` is inside the bounds of the `board` return `true`.
  * @public
- * @param {object} location - { row: {number}, col: {number} }
+ * @param {Location} location - { row: {number}, col: {number} }
  * @return {boolean}
  */
   this.inBounds = function(location) {
@@ -202,7 +205,7 @@ function World() {
 /**
  * Evolves the current `world` state one `generation`.
  * @public
- * @return {object} World
+ * @return {object}
  */
   this.evolve = function(){
     var grid = _board.grid;
@@ -215,7 +218,7 @@ function World() {
  * Evolves the current `grid` state.
  * @protected
  * @param {array} grid
- * @return {array} grid
+ * @return {array}
  */
   function _evolveGrid(grid) {
     return grid.map(function(row, rowIndex) {
@@ -243,8 +246,8 @@ function World() {
  * @param {array} grid
  * @param {number} rowIndex
  * @param {number} colIndex
- * @param {object} cell
- * @return {object} Cell
+ * @param {Cell} cell
+ * @return {Cell}
  */
   function _evolveCell(grid, rowIndex, colIndex, cell) {
     var cellLocation = new Location(rowIndex, colIndex);
@@ -257,7 +260,7 @@ function World() {
  * @protected
  * @param {object} cell
  * @param {number} aliveNeighbours
- * @return {object} Cell
+ * @return {Cell}
  */
   function _onRules(cell, aliveNeighbours) {
     var rules = this.getRules();
@@ -284,7 +287,7 @@ function World() {
 /**
  * Returns the number of alive `Cell` neighbours for a given `Location`.
  * @protected
- * @param {object} location
+ * @param {Location} location
  * @return {number}
  */
   function _countNeighbours(location) {
@@ -309,7 +312,7 @@ function World() {
  * Creates `rules` type from `ruleString`.
  * @protected
  * @param {string} ruleString
- * @returns {object} rules
+ * @returns {rules}
  */
   function _createRules(ruleString) {
     var rulesArr = ruleString.split('/');
@@ -322,8 +325,8 @@ function World() {
 /**
  * Helper function for setting `rules`.
  * @protected
- * @param {object} rules
- * @returns {object} rules
+ * @param {rules} rules
+ * @returns {rules}
  */
   function _setRules(rules) {
     _rules = rules;
@@ -333,7 +336,7 @@ function World() {
 /**
  * Get game `rules`
  * @public
- * @returns {object} rules
+ * @returns {rules}
  */
   this.getRules = function() {
     return _rules;
@@ -343,7 +346,7 @@ function World() {
  * Helper function to create a `grid` from `string`.
  * @protected
  * @param {string} str
- * @returns {array} grid
+ * @returns {array}
  */
   function _createGrid(str) {
     var gridArr = _getRowsArray(str);
@@ -369,7 +372,7 @@ function World() {
  * Helper function to `_createGrid`.
  * @protected
  * @param {string} char
- * @returns {object} Cell
+ * @returns {Cell}
  */
   function _convertChar(char) {
     if (char === '.') return new Cell(false);
