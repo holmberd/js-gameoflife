@@ -2,7 +2,7 @@
  * Copyright(c) 2016 Dag Holmberg
  * MIT Licensed
  * 
- * Game Of Life 2016/08/26
+ * Game Of Life
  * Supports Arbitrary World Rules: http://www.conwaylife.com/wiki/List_of_Life-like_cellular_automata
  *
  * Game-of-Life World Constructor 
@@ -27,7 +27,6 @@
 
  * Example:
  *
- * var world = require('./gameoflife.js');
  * var world = new World();
  * var ruleString = '23/3'; (B3/S23 - Conway's Life, or try B3/S1234 - Mazectric)
  * var board =  '......\n' +
