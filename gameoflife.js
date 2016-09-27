@@ -12,10 +12,9 @@
  *
  * @puplic API Methods:
  *
- * World.init(string, ruleString)
+ * World.init(board, ruleString)
  * World.getCell(location)
  * World.setCell(location, cell)
- * World.Location(row, col)
  * World.getRules()
  * World.getGeneration()
  * World.getAliveCount()
@@ -95,7 +94,6 @@ function World() {
 /**
  * Represents a Cell.
  * @constructor
- * @protected
  * @return {object} Cell
  */
   function Cell(state) {
@@ -106,16 +104,15 @@ function World() {
 /**
  * Represents a Location.
  * @constructor
- * @public
  * @param {number} row 
  * @param {number} col
  * @return {object} Location
  */
-  this.Location = function(row, col) {
+  function Location(row, col) {
     this.row = row;
     this.col = col;
     return this;
-  };
+  }
 
 /**
  * Returns a `Cell` from a given `location`.
@@ -250,7 +247,7 @@ function World() {
  * @return {object} Cell
  */
   function _evolveCell(grid, rowIndex, colIndex, cell) {
-    var cellLocation = new this.Location(rowIndex, colIndex);
+    var cellLocation = new Location(rowIndex, colIndex);
     var aliveNeighbours = _countNeighbours.call(this, cellLocation);
     return _onRules.call(this, cell, aliveNeighbours);
   }
@@ -297,7 +294,7 @@ function World() {
     neighbourCell = null;
 
     for (var i = 0; i < neighbours.length; i++) {  // loop over cells and count alive neighbours
-      neighbourLocation = new this.Location(location.row + neighbours[i][0], location.col + neighbours[i][1]);
+      neighbourLocation = new Location(location.row + neighbours[i][0], location.col + neighbours[i][1]);
       if (this.inBounds(neighbourLocation)) {
         neighbourCell = this.getCell(neighbourLocation);
         if (neighbourCell.state) {
