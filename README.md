@@ -7,7 +7,7 @@ Requirements:
 + Node.js
 + npm (Node.js package manager)
 ```
-npm install crypto-js
+npm install gameoflife-rulestring
 ```
 
 ###Usage:
