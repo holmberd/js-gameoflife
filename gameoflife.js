@@ -271,6 +271,24 @@ function GameOfLife() {
   };
 
   /**
+   * Converts the current `Board` to a `string`.
+   * @public
+   * @return {string}
+   */
+
+  world.toString = function() {
+    var str = '';
+    for (var row = 0; row < this.rows; row++) {
+      for (var col = 0; col < this.cols; col++) {
+        if (this.board[row][col].state) str += '*';
+        else str += '.'; 
+      }
+      str += '\n';
+    }
+    return str;
+  };
+
+  /**
    * Evolves the current `Board` state.
    * @param {array} board
    * @return {array}
@@ -364,23 +382,6 @@ function GameOfLife() {
     }
   }
 
-  /**
-   * Converts the current `Board` to a `string`.
-   * @public
-   * @return {string}
-   */
-
-  world.toString = function() {
-    var str = '';
-    for (var row = 0; row < this.rows; row++) {
-      for (var col = 0; col < this.cols; col++) {
-        if (this.board[row][col].state) str += '*';
-        else str += '.'; 
-      }
-      str += '\n';
-    }
-    return str;
-  };
 }
 
 
