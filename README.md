@@ -14,13 +14,13 @@ npm install gameoflife-rulestring
 ```
 var game = require('gameoflife-rulestring');
 
-var rules= '23/3'; // B3/S23 - Conway's Life
+var rules = '23/3'; // B3/S23 - Conway's Life
 var board =  '......\n' +
-                '***...\n' +
-                '......\n' +
-                '......\n' +
-                '......\n' +
-                '......\n';
+             '***...\n' +
+             '......\n' +
+             '......\n' +
+             '......\n' +
+             '......\n';
 var world = game.init(board, rules);
 world.evolve();
 console.log(world.toString());
