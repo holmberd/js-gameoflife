@@ -76,44 +76,44 @@ function GameOfLife() {
 
   /**
    * Initialises a `World`.
-   * @param {string} str
-   * @param {string} ruleString
+   * @param {string} boardScheme
+   * @param {string} rules
    * @return {World}
    */
 
-  this.init = function(str, ruleString) {
-    if (!_checkError(str)) {
-      var rows = _checkRows(str);
-      var cols = _checkCols(str);
-      var board = _makeBoard(str);
-      var rules = _makeRules(ruleString);
-      return new World(board, rules, rows, cols);
+  this.init = function(boardScheme, rules) {
+    if (!_checkError(boardScheme)) {
+      var _rows = _checkRows(boardScheme);
+      var _cols = _checkCols(boardScheme);
+      var _board = _makeBoard(boardScheme);
+      var _rules = _makeRules(rules);
+      return new World(_board, _rules, _rows, _cols);
     }
   };
 
   /**
    * If all rows are of equal length then return `true`.
-   * @param {string} str
+   * @param {string} boardScheme
    * @returns {boolean}
    */
 
-  function _rowError(str) {
-    var rowsArray = _getRowsArray(str);
-    return !rowsArray.every(isEqualLength);
+  function _rowError(boardScheme) {
+    var rows = _getRows(boardScheme);
+    return !rows.every(isEqualLength);
     function isEqualLength(row) {
-      return rowsArray[0].length === row.length;
+      return rows[0].length === row.length;
     }
   }
 
   /**
    * If `string` contains no illegal characters then return `true`.
-   * @param {string} str
+   * @param {string} boardScheme
    * @returns {boolean}
    */
 
-  function _charError (str) {
-    for (var i = 0; i < str.length; i++) {
-      if (str[i] !== '\n' && str[i] !== '.' && str[i] !== '*') {
+  function _charError (boardScheme) {
+    for (var i = 0; i < boardScheme.length; i++) {
+      if (boardScheme[i] !== '\n' && boardScheme[i] !== '.' && boardScheme[i] !== '*') {
         return true;
       }
     }
@@ -122,42 +122,42 @@ function GameOfLife() {
 
   /**
    * Error handler, checks for `rowError` & `_charError`, if error returns `true`.
-   * @param {string} str
+   * @param {string} boardScheme
    * @returns {error | boolean}
    */
 
-  function _checkError(str) {
-    if (_charError(str)) {
+  function _checkError(boardScheme) {
+    if (_charError(boardScheme)) {
       throw new Error('String must only contain the following characters: [ ".", "*", "\n" ]');
     }
-    else if (_rowError(str)) {
+    else if (_rowError(boardScheme)) {
       throw new Error('String rows must be of the same length.');
     }
     return false;
   }
 
   /**
-   * Creates the `Rules` from `ruleString`.
-   * @param {string} ruleString
+   * Creates the `Rules` from the set `rules`.
+   * @param {string} rules
    * @returns {object}
    */
 
-  function _makeRules(ruleString) {
-    var rulesArr = ruleString.split('/');
+  function _makeRules(rules) {
+    var rulesGroup = rules.split('/');
     return {
-      survival: rulesArr[0].split(''),
-      born: rulesArr[1].split('')
+      survival: rulesGroup[0].split(''),
+      born: rulesGroup[1].split('')
     };
   }
 
   /**
    * Takes a string and makes them into a `Board` of cells.
-   * @param {string} str
+   * @param {string} boardScheme
    * @returns {object}
    */
 
-  function _makeBoard(str) {
-    var board = _getRowsArray(str);
+  function _makeBoard(boardScheme) {
+    var board = _getRows(boardScheme);
     return board.map(function(row) {
       return _convertRow(row);
     });
@@ -165,12 +165,12 @@ function GameOfLife() {
 
   /**
    * Returns an array of rows.
-   * @param {string} str
+   * @param {string} boardScheme
    * @returns {array}
    */
 
-  function _getRowsArray(str) {
-    return str.split('\n').slice(0, -1);
+  function _getRows(boardScheme) {
+    return boardScheme.split('\n').slice(0, -1);
   }
 
   /**
@@ -180,8 +180,8 @@ function GameOfLife() {
    */
 
   function _convertRow(row) {
-    var rowArr = row.split('');
-    return rowArr.map(function(char) {
+    var str = row.split('');
+    return str.map(function(char) {
       return _convertChar(char);
     });
   }
@@ -200,23 +200,23 @@ function GameOfLife() {
   }
 
   /**
-   * Returns length of each `rowsArray`.
-   * @param {string} str
+   * Returns the length of each `row` on the `Board`.
+   * @param {string} boardScheme
    * @returns {number}
    */
 
-  function _checkRows(str) {
-    return _getRowsArray(str).length;
+  function _checkRows(boardScheme) {
+    return _getRows(boardScheme).length;
   }
 
   /**
    * Return number of newlines in a `string`.
-   * @param {string} str
+   * @param {string} boardScheme
    * @returns {number}
    */
 
-  function _checkCols(str) {
-    return str.indexOf('\n');
+  function _checkCols(boardScheme) {
+    return boardScheme.indexOf('\n');
   }
 
   /**
@@ -301,7 +301,7 @@ function GameOfLife() {
   }
 
   /**
-   * Evolves a row in the array of rows.
+   * Evolves a row in an array of rows.
    * @param {number} rowIndex
    * @param {array} row
    * @return {array}
