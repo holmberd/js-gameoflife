@@ -34,7 +34,13 @@ console.log(world.toString());
 ```
 
 ###Game of Life World Initializer
-+ init({string}, {string}) - Initializes the World with board and rules.
+
+Initialises a `World`.
+  @param {string} boardScheme
+  @param {string} rules
+  @return {World}
+
++ require('gameoflife-rulestring').init(boardScheme, rules)
 
 ###@Public API Methods:
 + World.board - [Getter]
