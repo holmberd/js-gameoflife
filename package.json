@@ -11,6 +11,7 @@
     "url": "git+https://github.com/holmberd/js-gameoflife.git"
   },
   "keywords": [
+    "gameoflife",
     "conway",
     "game of life",
     "game-of-life",
