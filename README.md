@@ -1,7 +1,7 @@
-##Game of Life
+## Game of Life
 + Supports Arbitrary World Rules: http://www.conwaylife.com/wiki/List_of_Life-like_cellular_automata
 
-###Node.js (Install)
+### Node.js (Install)
 Requirements:
 
 + Node.js
@@ -10,7 +10,7 @@ Requirements:
 npm install gameoflife-rulestring
 ```
 
-###Usage:
+### Usage:
 ```
 var game = require('gameoflife-rulestring');
 
@@ -33,7 +33,7 @@ console.log(world.toString());
 . . . . . .
 ```
 
-###Game of Life World Initializer
+### Game of Life World Initializer
 
 ```
 Initialises a World.
@@ -44,7 +44,7 @@ Initialises a World.
 
 + require('gameoflife-rulestring').init(boardScheme, rules)
 
-###@Public API Methods:
+### @Public API Methods:
 + World.board - [Getter]
 + World.rows - [Getter]
 + World.cols - [Getter]
@@ -57,7 +57,7 @@ Initialises a World.
 + World.toString()
 + World.inBound({Location})
 
-##License
+## License
 
 Free to use and abuse under the MIT license.
 http://www.opensource.org/licenses/mit-license.php
