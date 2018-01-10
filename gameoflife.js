@@ -251,8 +251,13 @@ function GameOfLife() {
    */
 
   world.inBounds = function(location) {
-    return (location.row <= this.rows && location.row >= 0) && 
-      (location.col <= this.cols && location.col >= 0);
+    if (location.row > (this.rows - 1) || location.row < 0) {
+      return false;
+    }
+    if (location.col > (this.cols - 1) || location.col < 0) { 
+      return false;
+    }
+    return true;
   };
 
   /**
