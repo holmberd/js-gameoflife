@@ -5,10 +5,10 @@
 * Game Of Life
 * Supports Arbitrary World Rules: http://www.conwaylife.com/wiki/List_of_Life-like_cellular_automata
 *
-* #Game-of-Life World Initializer
+* Game-of-Life World Initializer:
 * gameoflife.init({string}, {string}) - Initializes the World with board and rules.
 *
-* #World public API:
+* World public API:
 * World.board - [Getter]
 * World.rows - [Getter]
 * World.cols - [Getter]
@@ -23,7 +23,7 @@
 */
 
 /**
-* #Module example usage
+* Module example usage:
 *
 * var game = require('./gameoflife.js');
 * var rules= '23/3'; (B3/S23 - Conway's Life)
